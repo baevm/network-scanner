@@ -36,7 +36,7 @@ func Scan(hostname, protocol string, portCount int) {
 		PortCount: portCount,
 	}
 
-	scanResults := scanner.ScanHost()
+	scanResults := scanner.scanHost()
 
 	if len(scanResults) == 0 {
 		fmt.Printf("Not found open ports at %s", hostname)
@@ -74,8 +74,7 @@ func (s Scanner) scanPort(port int, ch chan ScanResult) {
 	}
 }
 
-func (s Scanner) ScanHost() []ScanResult {
-
+func (s Scanner) scanHost() []ScanResult {
 	var res []ScanResult
 	ch := make(chan ScanResult, s.PortCount)
 

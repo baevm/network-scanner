@@ -3,9 +3,9 @@ package main
 import (
 	"flag"
 	"log"
-	"os"
-	"network-scanner/network"
+	"network-scanner/packets"
 	"network-scanner/port"
+	"os"
 )
 
 var scanOption int
@@ -25,7 +25,7 @@ func main() {
 	case 1:
 		port.Scan(hostname, protocol, portCount)
 	case 2:
-		network.StartScan()
+		packets.Scan()
 	default:
 		log.Println("No such option.")
 		os.Exit(1)

@@ -1,4 +1,4 @@
-package network
+package packets
 
 import (
 	"fmt"
@@ -9,7 +9,7 @@ import (
 	"github.com/google/gopacket/pcap"
 )
 
-func StartScan() {
+func Scan() {
 	deviceNum := 0
 	const size = 1024
 	const promiscmode = false
@@ -24,7 +24,6 @@ func StartScan() {
 	}
 
 	fmt.Println("Select device to scan:")
-
 	fmt.Scanln(&deviceNum)
 
 	device := devices[deviceNum]
