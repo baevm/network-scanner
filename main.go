@@ -2,48 +2,32 @@ package main
 
 import (
 	"flag"
-	"fmt"
+	"log"
 	"os"
-	"port-scanner/port"
-	"sort"
-	"text/tabwriter"
+	"network-scanner/network"
+	"network-scanner/port"
 )
 
-func main() {
-	var address string
-	var protocol string
-	var portCount int
+var scanOption int
 
-	flag.StringVar(&address, "a", "localhost", "Address to scan ports")
-	flag.StringVar(&protocol, "p", "tcp", "Protocol")
+var hostname string
+var protocol string
+var portCount int
+
+func main() {
+	flag.IntVar(&scanOption, "o", 1, "Select scanning option: \n 1. Port scanner \n 2. Network scanner")
+	flag.StringVar(&hostname, "a", "localhost", "Address to scan ports")
+	flag.StringVar(&protocol, "p", "tcp", "Protocol to scan ports")
 	flag.IntVar(&portCount, "c", 1024, "Port count")
 	flag.Parse()
 
-	fmt.Println("Starting scanning....")
-
-	scanner := port.Scanner{
-		Hostname:  address,
-		Protocol:  protocol,
-		PortCount: portCount,
+	switch scanOption {
+	case 1:
+		port.Scan(hostname, protocol, portCount)
+	case 2:
+		network.StartScan()
+	default:
+		log.Println("No such option.")
+		os.Exit(1)
 	}
-
-	scanResults := scanner.ScanHost()
-
-	if len(scanResults) == 0 {
-		fmt.Printf("Not found open ports at %s", address)
-		return
-	}
-
-	sort.Slice(scanResults, func(i, j int) bool {
-		return scanResults[i].Port < scanResults[j].Port
-	})
-
-	w := tabwriter.NewWriter(os.Stdout, 10, 1, 1, ' ', tabwriter.Debug)
-	fmt.Fprintf(w, "%s\t%v\t%v\t\n", "PORT", "STATUS", "PROTOCOL")
-
-	for _, res := range scanResults {
-		fmt.Fprintf(w, "%d\t%v\t%v\t\n", res.Port, res.State, res.Protocol)
-	}
-
-	w.Flush()
 }
